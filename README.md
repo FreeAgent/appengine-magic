@@ -804,8 +804,10 @@ which implements the actual work performed by the task.
 
 - `add! :url <callback-url>` (optional keywords: `:queue`, `:task-name`,
   `:join-current-transaction?`, `:params`, `:headers`, `:payload`, `:method`,
-  `:countdown-ms`, `:eta-ms`, `:eta`). The `:url` keyword is required. This
-  function returns a task handle object.
+  `:countdown-ms`, `:eta-ms`, `:eta`). 
+  The `:url` keyword is normally required, unless `:payload` contains a
+  `DeferredTask` object.
+  This function returns a task handle object.
   * `:queue`: name of the queue to use; if omitted, uses the system default
     queue. If provided, the queue must be defined in `queue.xml`.
   * `:task-name`: an optional name for the task.
@@ -817,7 +819,7 @@ which implements the actual work performed by the task.
   * `:headers`: a map of extra HTTP headers sent to the callback.
   * `:payload`: provides data for the callback. Can be a string, a vector of the
     form `[<string> <charset>]`, or a vector of the form `[<byte-array>
-    <content-type>]`.
+    <content-type>]`; or a `DeferredTask` object (see below).
   * `:method`: supports `:post`, `:delete`, `:get`, `:head`, and `:put`. Default
     is `:post`.
   * `:countdown-ms`, `:eta-ms`, and `:eta`: scheduling parameters. Only one of
@@ -833,6 +835,32 @@ which implements the actual work performed by the task.
   given queue. The task may be specified by its name or by its handle object.
   * `:queue`: name of the queue to use; if omitted, uses the system default
     queue.
+
+
+  To create an object which implements DeferredTask, to use as a payload:
+   
+  `(def dtask (reify
+               DeferredTask
+                 (run [this] (my-function... )))`
+  
+  or:
+  
+  `(defrecord DTask [data]
+    DeferredTask
+      (run [this] (my-function... )))
+  ; (A record is Serializable by default, so only Runnable needs to be implemented.)
+  (def dtask (DTask. my-data))`
+  
+  
+  or:
+  
+  `(def dtask (proxy [DeferredTask] []
+             (run [] (my-function... )))`
+
+  ; Normal return from the run function is considered success.
+  ; Exceptions thrown from run will indicate failure--and will be processed 
+  ; as a retry attempt unless DeferredTaskContext.setDoNotRetry(boolean) 
+  ; is called to avoid the retry processing.
 
 
 ### URL Fetch service
@@ -946,6 +974,16 @@ socket.onclose = function(evt) { var data = evt.data; ... };
 NB: The development implementations of the Channel service just poll the server
 for updates, and merely emulate server push. If you watch a browser request
 console, you'll see the polling requests.
+
+
+### Capabilities service
+
+With `appengine-magic.services.capable`, 
+
+
+### Backends 
+
+With `appengine-magic.services.backend`, 
 
 
 

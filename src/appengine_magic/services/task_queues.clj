@@ -2,7 +2,7 @@
   (:require [appengine-magic.services.datastore :as ds])
   (:import java.util.Date
            [com.google.appengine.api.taskqueue Queue QueueFactory
-            TaskOptions$Builder TaskOptions$Method]))
+            TaskOptions$Builder TaskOptions$Method DeferredTask]))
 
 
 (defonce ^{:dynamic true} *default-queue* (atom nil))
@@ -38,12 +38,15 @@
                     params {}
                     headers {}
                     method :post}}]
-  (when (or (nil? url) (not (string? url)) (= "" (.trim url)))
+  (when (or (nil? url) (not (string? url)) (= "" (.trim url)) (not (instance? DeferredTask payload))
     (throw (IllegalArgumentException. "add! requires a :url argument")))
   (when-not (map? params)
     (throw (IllegalArgumentException. "add! :params must be a map")))
   (let [queue-obj (get-task-queue :queue queue)
-        opts (TaskOptions$Builder/withUrl url)]
+        opts (TaskOptions$Builder/withDefaults)]
+    ; url (always present, except for DeferredTask)
+    (when url 
+      (.url opts url))
     ;; headers
     (doseq [[header-name header-value] headers]
       (.header opts header-name header-value))
@@ -64,8 +67,8 @@
     (cond
      ;; nothing, no problem
      (nil? payload) nil
-     ;; just a string
-     (string? payload)
+     ;; DeferredTask or just a string
+     (or (instance? DeferredTask payload) (string? payload)) 
      (.payload opts payload)
      ;; string with a charset, or a byte array with a Content-Type
      (and (sequential? payload) (= 2 (count payload)))
