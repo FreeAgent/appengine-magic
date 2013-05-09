@@ -41,5 +41,11 @@
   (.getNickname user))
 
 
+(defn get-user-id 
+  "Returns an opaque, permanent ID string that uniquely identifies the user." 
+  [#^User user]
+  (.getUserId user))
+
+
 (defn get-auth-domain [#^User user]
   (.getAuthDomain user))

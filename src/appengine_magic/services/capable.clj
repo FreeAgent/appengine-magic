@@ -5,13 +5,9 @@
 
 (defonce ^{:dynamic true} *cap-service* (atom nil))
 
-; TBD: doc-strings
-; TBD: modify isAvailable to return a Date if the status is Scheduled?
-; TBD: then change the function-names below to getXYZStatus
+(defonce ENABLED CapabilityStatus/ENABLED) 
 
-(defonce CAP_ENABLED CapabilityStatus/ENABLED) 
-
-(defonce CAP_SCHEDULED CapabilityStatus/SCHEDULED_MAINTENANCE) 
+(defonce SCHEDULED CapabilityStatus/SCHEDULED_MAINTENANCE) 
 
 ; When maintenance is upcoming .getScheduledDate should give the scheduled date
 ;
@@ -20,40 +16,46 @@
 ; UNKNOWN
 
 
-(defn get-cap-service []
+(defn get-cap-service 
+  ""
+  []
     (when (nil? @*cap-service*)
       (reset! *cap-service* (CapabilitiesServiceFactory/getCapabilitiesService)))
        @*cap-service*)
 
 
-(defn isServiceAvailable [theService]
-  (let [status (.. (get-cap-service) (getStatus theService) (getStatus))]
-    (if (= status CAP_ENABLED) true false)))
+(defn getServiceStatus
+  "-returns true if the service is ENABLED.
 
+   -returns nil if the status is DISABLED or UNKNOWN.
 
-(defn isBlobstoreAvailable [] (isServiceAvailable Capability/BLOBSTORE))
+   -returns the Date object containing the date for maintenace,
+   when the status is set to SCHEDULED_MAINTENANCE. 
+   (Note that such a Date object evaluates to true when used as a boolean."
+  [theService]
+  (let [capability (.. (get-cap-service) (getStatus theService))
+        status (.. capability (getStatus))]
+    (cond 
+      (= status ENABLED) true
+      (= status SCHEDULED) (.. capability .getScheduledDate)
+      :else nil)))
 
-(defn isDatastoreAvailable [] (isServiceAvailable Capability/DATASTORE))
+ 
+(defn getBlobstoreStatus [] (getServiceStatus Capability/BLOBSTORE))
 
-(defn isDatastoreWriteAvailable [] (isServiceAvailable Capability/DATASTORE_WRITE))
+(defn getDatastoreStatus [] (getServiceStatus Capability/DATASTORE))
 
-(defn isImageServiceAvailable [] (isServiceAvailable Capability/IMAGES))
+(defn getDatastoreWriteStatus [] (getServiceStatus Capability/DATASTORE_WRITE))
 
-(defn isMailAvailable [] (isServiceAvailable Capability/MAIL))
+(defn getImageServiceStatus [] (getServiceStatus Capability/IMAGES))
 
-(defn isMemcacheAvailable [] (isServiceAvailable Capability/MEMCACHE))
+(defn getMailStatus [] (getServiceStatus Capability/MAIL))
 
-(defn isTaskQueueAvailable [] (isServiceAvailable Capability/TASKQUEUE))
+(defn getMemcacheStatus [] (getServiceStatus Capability/MEMCACHE))
 
-(defn isUrlFetchAvailable [] (isServiceAvailable Capability/URL_FETCH))
+(defn getTaskQueueStatus [] (getServiceStatus Capability/TASKQUEUE))
 
-(defn isXMPPAvailable [] (isServiceAvailable Capability/XMPP))
+(defn getUrlFetchStatus [] (getServiceStatus Capability/URL_FETCH))
 
-
-(defn getDowntimeDate [theService]
-   (let [capability (.. (get-cap-service) (getStatus theService))
-         status (.. capability (getStatus))]
-     (if (= status CAP_SCHEDULED) 
-       (.. capability .getScheduledDate)
-       nil)))
+(defn getXMPPStatus [] (getServiceStatus Capability/XMPP))
 

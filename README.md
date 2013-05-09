@@ -836,31 +836,29 @@ which implements the actual work performed by the task.
   * `:queue`: name of the queue to use; if omitted, uses the system default
     queue.
 
+## DeferredTask objects
 
   To create an object which implements DeferredTask, to use as a payload:
    
-  `(def dtask (reify
-               DeferredTask
-                 (run [this] (my-function... )))`
+  `(def dtask (reify`
+     `DeferredTask`
+       `(run [this] (my-function... )))`
   
   or:
   
-  `(defrecord DTask [data]
-    DeferredTask
-      (run [this] (my-function... )))
-  ; (A record is Serializable by default, so only Runnable needs to be implemented.)
-  (def dtask (DTask. my-data))`
+  `(defrecord DTask [data]`
+    `DeferredTask`
+      `(run [this] (my-function... )))`
+  `; (A record is Serializable by default, so only Runnable needs to be implemented.)`
+  `(def dtask (DTask. my-data))`
   
   
   or:
   
-  `(def dtask (proxy [DeferredTask] []
-             (run [] (my-function... )))`
+  `(def dtask (proxy [DeferredTask] []`
+     `(run [] (my-function... )))`
 
-  ; Normal return from the run function is considered success.
-  ; Exceptions thrown from run will indicate failure--and will be processed 
-  ; as a retry attempt unless DeferredTaskContext.setDoNotRetry(boolean) 
-  ; is called to avoid the retry processing.
+  Normal return from the run function is considered success. Exceptions thrown from run will indicate failure--and will be processed as a retry attempt unless `do-not-retry-deferred-task` is called in advance to avoid the retry processing.
 
 
 ### URL Fetch service
@@ -978,12 +976,36 @@ console, you'll see the polling requests.
 
 ### Capabilities service
 
-With `appengine-magic.services.capable`, 
+With appengine-magic.services.capable, you have the facility to check for downtime on App Engine services.
 
+The following nine functions accept no arguments. They return `true` if the relevant service is `ENABLED`; and nil if the service is `DISABLED` (or if its state is `UNKNOWN`). If the status of the service is `SCHEDULED_MAINTENANCE`, these functions return a `Date` object containing the scheduled date for downtime. (Note that such a `Date` object will evaluate as `true` in a boolean context. This is technically correct, since the service is still available in advance of maintenance.)
+
+`getBlobstoreStatus` 
+`getDatastoreStatus`
+`getDatastoreWriteStatus`
+`getImageServiceStatus`
+`getMailStatus`
+`getMemcacheStatus`
+`getTaskQueueStatus`
+`getUrlFetchStatus`
+`getXMPPStatus`
 
 ### Backends 
 
-With `appengine-magic.services.backend`, 
+In `appengine-magic.services.backend`, you'll find the following functions for betting the address of a backend (for use with Task Queues, for example).
+
+`(getBackendAddress backend)`
+`(getBackendAddress backend, instance)`
+
+The following functions accept no arguments. They return the name of the backend handling the current request, or the no. of the backend instance.
+
+`getCurrentBackend`
+`getCurrentInstance`
+
+
+### Multitenancy (Namespaces)
+
+With `appengine-magic.services.namespace`, 
 
 
 

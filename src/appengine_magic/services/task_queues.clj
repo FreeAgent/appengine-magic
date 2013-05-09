@@ -1,9 +1,8 @@
 (ns appengine-magic.services.task-queues
   (:require [appengine-magic.services.datastore :as ds])
   (:import java.util.Date
-           [com.google.appengine.api.taskqueue Queue QueueFactory
-            TaskOptions$Builder TaskOptions$Method DeferredTask]))
-
+           [com.google.appengine.api.taskqueue DeferredTaskContext DeferredTask 
+            Queue QueueFactory TaskOptions$Builder TaskOptions$Method]))
 
 (defonce ^{:dynamic true} *default-queue* (atom nil))
 (defonce ^{:dynamic true} *named-queues* (atom {}))
@@ -38,13 +37,13 @@
                     params {}
                     headers {}
                     method :post}}]
-  (when (or (nil? url) (not (string? url)) (= "" (.trim url)) (not (instance? DeferredTask payload))
+  (when (or (and (or (nil? url) (= "" (.trim url))) (not (instance? DeferredTask payload))) (not (string? url)))
     (throw (IllegalArgumentException. "add! requires a :url argument")))
   (when-not (map? params)
     (throw (IllegalArgumentException. "add! :params must be a map")))
   (let [queue-obj (get-task-queue :queue queue)
         opts (TaskOptions$Builder/withDefaults)]
-    ; url (always present, except for DeferredTask)
+    ; url 
     (when url 
       (.url opts url))
     ;; headers
@@ -109,3 +108,13 @@
 (defn delete! [task & {:keys [queue]}]
   (let [queue-obj (get-task-queue :queue queue)]
     (.deleteTask queue-obj task)))
+
+
+(defn do-not-retry-deferred-task
+  "Stop deferred tasks from being retried (when they fail)."
+  [] (DeferredTaskContext/setDoNotRetry true))
+
+
+(defn do-retry-deferred-task
+  "Set deferred tasks to be retried (when they fail). This is the default."
+  [] (DeferredTaskContext/setDoNotRetry false)
