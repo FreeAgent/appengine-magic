@@ -10,13 +10,13 @@
       
 
 (defn get-google-apps-namespace
-  "get the Google Apps Namespace"
+  "get the Google Apps namespace"
   []
   (.getGoogleAppsNamespace NamespaceManager))
      
 
 (defn set-namespace
-  "set the current global Namespace"
+  "set the current global namespace"
   [new-name]
   (.set NamespaceManager new-name))
      
@@ -41,7 +41,7 @@
   
 
 (defn set-namespace-by-domain-and-user
-  "set the global namespace based on the Google Apps domain"
+  "set the global namespace using the Google Apps domain plus the user-id."
   []
   (let [id (u/get-user-id)]
     (set-namespace (str (get-google-apps-namespace) id))))

@@ -403,7 +403,7 @@ for handling users.
   authentication servlet URL, and forwards the user to the optional destination.
 - `logout-url` (optional keyword: `:destination`): performs logout, and forwards
   the user to the optional destination.
-
+- `get-user-id` yields a unique, opaque and permanent identifier string for the user.
 
 ### Memcache service
 
@@ -992,12 +992,12 @@ The following nine functions accept no arguments. They return `true` if the rele
 
 ### Backends 
 
-In `appengine-magic.services.backend`, you'll find the following functions for betting the address of a backend (for use with Task Queues, for example).
+In `appengine-magic.services.backend`, you'll find the following function for betting the address of a backend (for use with Task Queues, for example). It accepts the name of a backend and, optionally, an instance number.
 
 `(getBackendAddress backend)`
 `(getBackendAddress backend, instance)`
 
-The following functions accept no arguments. They return the name of the backend handling the current request, or the no. of the backend instance.
+The following functions accept no arguments. They return the name of the backend handling the current request, or the number of the backend instance.
 
 `getCurrentBackend`
 `getCurrentInstance`
@@ -1005,8 +1005,17 @@ The following functions accept no arguments. They return the name of the backend
 
 ### Multitenancy (Namespaces)
 
-With `appengine-magic.services.namespace`, 
+In `appengine-magic.services.namespace`, you'll find the following functions for
+managing multitenancy and dealing with namespaces.
 
+- `get-namespace`: returns the current namespace (for Task Queues, Datastore and Memcache operations).
+- `get-google-apps-namespace`: get the Google Apps Namespace.
+- `set-namespace`: set the current global Namespace.
+- `validate-namespace`: validate a proposed namespace with regular expression `[0‑9A‑Za‑z._‑]{0,100}`
+- `set-namespace-by-user-id`: set the global namespace based on the user-id of the current user.
+- `set-namespace-by-domain`: set the global namespace based on the Google Apps domain.
+- `set-namespace-by-domain-and-user`: set the global namespace using the Google Apps domain plus the user-id.
+- `run-in-namespace`: set the namespace; call a function; then restore the old namespace.
 
 
 ## Limitations
