@@ -24,7 +24,7 @@ Please read the project's HISTORY file to learn what changed in recent releases.
 
 ## Current Status
 
-The code on this branch adds experimental support for App Engine SDK 1.7.4 and
+The code on this branch adds experimental support for App Engine SDK 1.7.6 and
 Leiningen 2.0. A stable older version is available
 [at the v0.5.0 tag](https://github.com/gcv/appengine-magic/tree/v0.5.0).
 
@@ -42,7 +42,7 @@ Leiningen 2.0. A stable older version is available
 
 * Clojure 1.4.0
 * Leiningen 2.0
-* Google App Engine SDK 1.7.4
+* Google App Engine SDK 1.7.6
 
 
 
@@ -836,29 +836,29 @@ which implements the actual work performed by the task.
   * `:queue`: name of the queue to use; if omitted, uses the system default
     queue.
 
-## DeferredTask objects
+#### DeferredTask objects
 
-  To create an object which implements DeferredTask, to use as a payload:
+  To create an object which implements DeferredTask, to use in a task-queue `:payload`
    
-  `(def dtask (reify`
-     `DeferredTask`
+  `(def dtask (reify`  
+     `DeferredTask`  
        `(run [this] (my-function... )))`
   
   or:
   
-  `(defrecord DTask [data]`
-    `DeferredTask`
-      `(run [this] (my-function... )))`
-  `; (A record is Serializable by default, so only Runnable needs to be implemented.)`
+  `(defrecord DTask [data]`  
+    `DeferredTask`  
+      `(run [this] (my-function... )))`  
+  `; (A record is Serializable by default, so only Runnable needs to be implemented.)`  
   `(def dtask (DTask. my-data))`
   
   
   or:
   
-  `(def dtask (proxy [DeferredTask] []`
+  `(def dtask (proxy [DeferredTask] []`  
      `(run [] (my-function... )))`
 
-  Normal return from the run function is considered success. Exceptions thrown from run will indicate failure--and will be processed as a retry attempt unless `do-not-retry-deferred-task` is called in advance to avoid the retry processing.
+  Normal return from the `run` function is considered success. Exceptions thrown from `run` will indicate failure--and will be processed as a retry attempt unless `do-not-retry-deferred-task` is called in advance to avoid the retry processing. (Call `do-retry-deferred-task` to enable retry attempts again.)
 
 
 ### URL Fetch service
@@ -976,31 +976,31 @@ console, you'll see the polling requests.
 
 ### Capabilities service
 
-With appengine-magic.services.capable, you have the facility to check for downtime on App Engine services.
+With `appengine-magic.services.capable`, you have the facility to check for downtime on App Engine services.
 
 The following nine functions accept no arguments. They return `true` if the relevant service is `ENABLED`; and nil if the service is `DISABLED` (or if its state is `UNKNOWN`). If the status of the service is `SCHEDULED_MAINTENANCE`, these functions return a `Date` object containing the scheduled date for downtime. (Note that such a `Date` object will evaluate as `true` in a boolean context. This is technically correct, since the service is still available in advance of maintenance.)
 
-`getBlobstoreStatus` 
-`getDatastoreStatus`
-`getDatastoreWriteStatus`
-`getImageServiceStatus`
-`getMailStatus`
-`getMemcacheStatus`
-`getTaskQueueStatus`
-`getUrlFetchStatus`
-`getXMPPStatus`
+- `get-blobstore-status` 
+- `get-datastore-status`
+- `get-datastore-write-status`
+- `get-image-service-status`
+- `get-mail-status`
+- `get-memcache-status`
+- `get-task-queue-status`
+- `get-url-fetch-status`
+- `get-xmpp-status`
 
 ### Backends 
 
-In `appengine-magic.services.backend`, you'll find the following function for betting the address of a backend (for use with Task Queues, for example). It accepts the name of a backend and, optionally, an instance number.
+In `appengine-magic.services.backend`, you'll find the following function for getting the address of a backend (for use with Task Queues, for example). It accepts the name of a backend and, optionally, an instance number.
 
-`(getBackendAddress backend)`
-`(getBackendAddress backend, instance)`
+- `(get-backend-address backend)` 
+- `(get-backend-address backend, instance)`
 
 The following functions accept no arguments. They return the name of the backend handling the current request, or the number of the backend instance.
 
-`getCurrentBackend`
-`getCurrentInstance`
+- `get-current-backend`
+- `get-current-instance`
 
 
 ### Multitenancy (Namespaces)
@@ -1009,8 +1009,8 @@ In `appengine-magic.services.namespace`, you'll find the following functions for
 managing multitenancy and dealing with namespaces.
 
 - `get-namespace`: returns the current namespace (for Task Queues, Datastore and Memcache operations).
-- `get-google-apps-namespace`: get the Google Apps Namespace.
-- `set-namespace`: set the current global Namespace.
+- `get-google-apps-namespace`: get the Google Apps namespace.
+- `set-namespace`: set the current global namespace.
 - `validate-namespace`: validate a proposed namespace with regular expression `[0‑9A‑Za‑z._‑]{0,100}`
 - `set-namespace-by-user-id`: set the global namespace based on the user-id of the current user.
 - `set-namespace-by-domain`: set the global namespace based on the Google Apps domain.

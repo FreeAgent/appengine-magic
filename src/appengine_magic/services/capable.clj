@@ -24,7 +24,7 @@
        @*cap-service*)
 
 
-(defn getServiceStatus
+(defn get-service-status
   "-returns true if the service is ENABLED.
 
    -returns nil if the status is DISABLED or UNKNOWN.
@@ -41,21 +41,21 @@
       :else nil)))
 
  
-(defn getBlobstoreStatus [] (getServiceStatus Capability/BLOBSTORE))
+(defn get-blobstore-status [] (get-service-status Capability/BLOBSTORE))
 
-(defn getDatastoreStatus [] (getServiceStatus Capability/DATASTORE))
+(defn get-datastore-status [] (get-service-status Capability/DATASTORE))
 
-(defn getDatastoreWriteStatus [] (getServiceStatus Capability/DATASTORE_WRITE))
+(defn get-datastore-write-status [] (get-service-status Capability/DATASTORE_WRITE))
 
-(defn getImageServiceStatus [] (getServiceStatus Capability/IMAGES))
+(defn get-image-service-Status [] (get-service-status Capability/IMAGES))
 
-(defn getMailStatus [] (getServiceStatus Capability/MAIL))
+(defn get-mail-status [] (get-service-status Capability/MAIL))
 
-(defn getMemcacheStatus [] (getServiceStatus Capability/MEMCACHE))
+(defn get-memcache-status [] (get-service-status Capability/MEMCACHE))
 
-(defn getTaskQueueStatus [] (getServiceStatus Capability/TASKQUEUE))
+(defn get-task-queue-status [] (get-service-status Capability/TASKQUEUE))
 
-(defn getUrlFetchStatus [] (getServiceStatus Capability/URL_FETCH))
+(defn get-url-fetch-status [] (get-service-status Capability/URL_FETCH))
 
-(defn getXMPPStatus [] (getServiceStatus Capability/XMPP))
+(defn get-xmpp-status [] (get-service-status Capability/XMPP))
 

@@ -13,21 +13,21 @@
       @*backend-service*)
 
 
-(defn getBackendAddress
+(defn get-backend-address
   "get the address of a backend, given its name (& optionally the instance no."
   [backend]
-  (.. (get-backed-service) (getBackendAddress backend)))
+  (.. (get-backed-service) (getBackendAddress backend))
   [backend, instance]
   (.. (get-backed-service) (getBackendAddress backend instance)))
 
 
-(defn getCurrentBackend
+(defn get-current-backend
   "Get the name of the backend handling the current request."
   []
   (.. (get-backed-service) (getCurrentBackend)))
 
 
-(defn getCurrentInstance
+(defn get-current-instance
   "returns an integer: the backend instance handling the current request"
   []
   (.. (get-backed-service) (getCurrentInstance)))
