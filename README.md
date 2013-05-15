@@ -2,28 +2,29 @@
 
 I'm using the following projects from @greynolds along with App Engine magic:
 
--[gaem](https://github.com/greynolds/gaem)
--[gaem-template](https://github.com/greynolds/gaem-template)
+- [gaem](https://github.com/greynolds/gaem)  
+- [gaem-template](https://github.com/greynolds/gaem-template)  
 
 These offer an alternative to the Lein task for App Engine Magic (`appengine_prepare`), which is broken on the main branch in @gcv's master repository.
 
 Note that using the above approach will *not* eliminate the minor 'Blobstore' error, when the server starts up in the development environment.
 
-I gather that the cause of this problem (in the `gaem` projects above, as well as in App Engine Magic's own Lein tasks) is that the local test-and-development JARs for App Engine have been copied into the war/WEB-INF/lib directory.
+I gather that the cause of the Blobstore error (in the `gaem` projects above, as well as in App Engine Magic's own Lein tasks) is that, during deployment, the local test-and-development JARs for App Engine are being copied into the `war/WEB-INF/lib` directory.
 
 
 ## Changes in this fork
 
-The following changes have been implemented. My next step is to write tests for these features. 
+Aside from an upgrade to App Engine SDK 1.8.0, the following changes have been implemented. My next step is to write tests for these features. 
 
--`backend.clj` (new wrapper for App Engine's backend server API)
--`namespace.clj` (new wrapper for multitenancy/namespaces) 
--`capable.clj` (new wrapper for Capabilities API)
--`user.clj` (just added a new `get-user-id` function)
--`task_queues.clj` (added the option to use DeferredTask objects)
--upgrade to App Engine SDK 1.8.0
+- `backend.clj` (new wrapper for backend server API)  
+- `namespace.clj` (new wrapper for multitenancy/namespaces)  
+- `capable.clj` (new wrapper for Capabilities API)  
+- `user.clj` (just added a new `get-user-id` function)  
+- `task_queues.clj` (added the option to use `DeferredTask` objects)  
 
 (The new features are all documented below in the relevant sections.)
+
+Testing of the changes above will be carried out in a project called: [aem-tester](https://github.com/FreeAgent/aem-tester.git)
 
 
 ## Overview
