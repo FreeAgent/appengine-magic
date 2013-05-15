@@ -1,3 +1,33 @@
+## How to get App Engine Magic working
+
+I'm using the following projects from @greynolds along with App Engine magic:
+
+-[gaem](https://github.com/greynolds/gaem)
+-[gaem-template](https://github.com/greynolds/gaem-template)
+
+These offer an alternative to the Lein task for App Engine Magic (`appengine_prepare`), which is broken on the main branch in @gcv's master repository.
+
+Note that using the above approach will *not* eliminate the minor 'Blobstore' error, when the server starts up in the development environment.
+
+I gather that the cause of this problem (in the `gaem` projects above, as well as in App Engine Magic's own Lein tasks) is that the local test-and-development JARs for App Engine have been copied into the war/WEB-INF/lib directory.
+
+
+## Changes in this fork
+
+The following changes have been implemented. My next step is to write tests for these features. 
+
+-`backend.clj` (new wrapper for App Engine's backend server API)
+-`namespace.clj` (new wrapper for multitenancy/namespaces) 
+-`capable.clj` (new wrapper for Capabilities API)
+-`user.clj` (just added a new `get-user-id` function)
+-`task_queues.clj` (added the option to use DeferredTask objects)
+-upgrade to App Engine SDK 1.8.0
+
+(The new features are all documented below in the relevant sections.)
+
+
+## Overview
+
 The appengine-magic library attempts to abstract away the infrastructural nuts
 and bolts of writing a Clojure application for the Google App Engine platform.
 
@@ -24,7 +54,7 @@ Please read the project's HISTORY file to learn what changed in recent releases.
 
 ## Current Status
 
-The code on this branch adds experimental support for App Engine SDK 1.7.6 and
+The code on this branch adds experimental support for App Engine SDK 1.8.0 and
 Leiningen 2.0. A stable older version is available
 [at the v0.5.0 tag](https://github.com/gcv/appengine-magic/tree/v0.5.0).
 
@@ -42,7 +72,7 @@ Leiningen 2.0. A stable older version is available
 
 * Clojure 1.4.0
 * Leiningen 2.0
-* Google App Engine SDK 1.7.6
+* Google App Engine SDK 1.8.0
 
 
 
