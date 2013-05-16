@@ -5,12 +5,11 @@ I'm using the following projects from @greynolds along with App Engine magic:
 - [gaem](https://github.com/greynolds/gaem)  
 - [gaem-template](https://github.com/greynolds/gaem-template)  
 
-These offer an alternative to the Lein task for App Engine Magic (`appengine_prepare`), which is broken on the main branch in @gcv's master repository.
+These offer an alternative to the Lein task for App Engine Magic (`appengine_prepare`), which is broken on the main branch in @gcv's master repository. 
 
-Note that using the above approach will *not* eliminate the minor 'Blobstore' error, when the server starts up in the development environment.
+Under the first "TODO" heading below, you'll see a mention of a 'Blobstore' error, when the server starts up in the development environment. The cause of the Blobstore error (in the `gaem` projects above, as well as in App Engine Magic's own Lein tasks) is that, during deployment, `appengine-tools-api-x.y.z.jar` is being copied into the `war/WEB-INF/lib` directory. Add this file to `:uberjar-exclusions` in your `project.clj` file (assuming that you're using `gaem-template` and `gaem` above).
 
-I gather that the cause of the Blobstore error (in the `gaem` projects above, as well as in App Engine Magic's own Lein tasks) is that, during deployment, the local test-and-development JARs for App Engine are being copied into the `war/WEB-INF/lib` directory.
-
+Following these instructions, you'll have a solution or workaround to three of the four issues listed under the first "TODO" heading above. The fourth issue (broken links in the admin console in the local development server) has yet to be addressed.
 
 ## Changes in this fork
 
@@ -24,7 +23,7 @@ Aside from an upgrade to App Engine SDK 1.8.0, the following changes have been i
 
 (The new features are all documented below in the relevant sections.)
 
-Testing of the changes above will be carried out in a project called: [aem-tester](https://github.com/FreeAgent/aem-tester.git)
+Testing of the changes above will be carried out in a project called: [aem-test](https://github.com/FreeAgent/aem-test.git), deployed on App Engine as: [aem-test.appspot.com](http://aem-test.appspot.com).
 
 
 ## Overview
