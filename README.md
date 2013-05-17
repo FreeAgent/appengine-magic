@@ -1,15 +1,18 @@
 ## How to get App Engine Magic working
 
-I'm using the following projects from @greynolds along with App Engine magic:
+Along with this fork of App Engine Magic, I'm using the following projects from @greynolds: 
 
 - [gaem](https://github.com/greynolds/gaem)  
 - [gaem-template](https://github.com/greynolds/gaem-template)  
 
 These offer an alternative to the Lein task for App Engine Magic (`appengine_prepare`), which is broken on the main branch in @gcv's master repository. 
 
-Under the first "TODO" heading below, you'll see a mention of a 'Blobstore' error, when the server starts up in the development environment. The cause of the Blobstore error (in the `gaem` projects above, as well as in App Engine Magic's own Lein tasks) is that, during deployment, `appengine-tools-api-x.y.z.jar` is being copied into the `war/WEB-INF/lib` directory. Add this file to `:uberjar-exclusions` in your `project.clj` file (assuming that you're using `gaem-template` and `gaem` above).
+Under the first "TODO" heading below, you'll see a mention of a 'Blobstore' error, when the server starts up in the development environment. The cause of the Blobstore error (in the `gaem` projects above, as well as in App Engine Magic's own Lein tasks) is that, during deployment, `appengine-tools-api-x.y.z.jar` is being copied into the `war/WEB-INF/lib` directory. Add this file to `:uberjar-exclusions` in your `project.clj` file (assuming that you've used `gaem-template` above to produce starter-code for your project).
 
-Following these instructions, you'll have a solution or workaround to three of the four issues listed under the first "TODO" heading above. The fourth issue (broken links in the admin console in the local development server) has yet to be addressed.
+Following these instructions, you'll have a solution or workaround for two of the four issues listed under the first "TODO" heading below. The two remaining issues are as follows:
+- some links are broken in the admin console in the local development server.
+- server push with the Channel API seems to be broken.
+
 
 ## Changes in this fork
 
