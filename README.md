@@ -146,7 +146,7 @@ You need a copy of the Google App Engine SDK installed
 somewhere. appengine-magic cannot replace its `dev_appserver.sh` and `appcfg.sh`
 functionality.
 
-1. `lein new` <project-name>
+1. `lein new <project-name>`
 2. Optional: `rm src/<project-name>/core.clj` to clean out the default
    `core.clj` file created by Leiningen. You need to do this so that
    appengine-magic can create a default file which correctly invokes the
